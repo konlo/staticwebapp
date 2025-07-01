@@ -1,18 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
-  <title>Vanilla JavaScript App</title>
+    <meta charset="UTF-8">
+    <title>LLM Prompt App</title>
 </head>
-
 <body>
-  <main>
-    <h1>Vanilla JavaScript App</h1>
-  </main>
-  konlo
-</body>
+    <h1>챗봇 프롬프트 테스트</h1>
+    <input type="text" id="userInput" placeholder="질문을 입력하세요">
+    <button onclick="sendPrompt()">전송</button>
+    <div id="response" style="margin-top: 20px; font-weight: bold;"></div>
 
+    <script>
+        async function sendPrompt() {
+        		const responseDiv = document.getElementById("response");                
+            const input = document.getElementById("userInput").value;
+            const functionAppUrl = "https://konlona.azurewebsites.net/api/kopenai_test";
+            const urlWithParams = `${functionAppUrl}?prompt=${encodeURIComponent(input)}`;
+            
+            responseDiv.innerText = input
+            
+            try {
+                const res = await fetch(urlWithParams, {
+                    method: "GET",  // ? body 불가능
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+
+                const data = await res.text();
+                responseDiv.innerText = data;
+                alert(data);
+            } catch (error) {
+                responseDiv.innerText = "오류 발생: " + error.message;
+                alert("오류: " + error.message);
+            }            
+
+        }
+    </script>
+</body>
 </html>
